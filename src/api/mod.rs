@@ -17,3 +17,25 @@ pub struct PluginApi {
     pub run: extern "C" fn(*mut std::ffi::c_void, *const ArgMatches) -> i32,
     pub drop: extern "C" fn(*mut std::ffi::c_void),
 }
+
+#[repr(C)]
+pub struct PluginCommand {
+    pub name: &'static str,
+    pub about: &'static str,
+    pub args: Vec<Arg>,
+    pub subcommands: Vec<PluginCommand>,
+}
+
+#[repr(C)]
+#[derive(Default)]
+pub struct Arg {
+    pub name: &'static str,
+    pub short: &'static str,
+    pub long: &'static str,
+    pub about: &'static str,
+    pub required: bool,
+    pub last: bool,
+    pub trailing_var_arg: bool,
+    pub requires: Vec<&'static str>,
+    pub global: bool,
+}

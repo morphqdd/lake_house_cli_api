@@ -1,7 +1,7 @@
 use std::ffi::{c_char, c_void};
 
 use clap::{ArgMatches, Command, arg};
-use lake_house_cli_api::api::{Plugin, PluginApi};
+use lake_house_cli_api::api::{Arg, Plugin, PluginApi, PluginCommand};
 
 pub struct SimplePlugin;
 
@@ -10,10 +10,16 @@ impl SimplePlugin {
         "say"
     }
 
-    fn _command(&self) -> clap::Command {
-        Command::new(self._name())
-            .about("Just saying something")
-            .arg(arg!(<SOMETHING>))
+    fn _command(&self) -> PluginCommand {
+        PluginCommand {
+            name: self._name(),
+            about: "Just say something",
+            args: vec![Arg {
+                name: "something",
+                ..Default::default()
+            }],
+            subcommands: vec![],
+        }
     }
 
     fn _run(&self, matches: clap::ArgMatches) -> anyhow::Result<()> {
@@ -37,9 +43,9 @@ impl SimplePlugin {
         std::ffi::CString::new(this._name()).unwrap().into_raw()
     }
 
-    extern "C" fn command(ptr: *mut c_void) -> *mut c_void {
+    extern "C" fn command(ptr: *mut c_void) -> *mut PluginCommand {
         let this = unsafe { &*(ptr as *mut SimplePlugin) };
-        Box::into_raw(Box::new(this._command())) as *mut c_void
+        Box::into_raw(Box::new(this._command()))
     }
 
     extern "C" fn run(ptr: *mut c_void, matches: *const ArgMatches) -> i32 {
