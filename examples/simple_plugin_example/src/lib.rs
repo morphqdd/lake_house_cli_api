@@ -12,7 +12,6 @@ impl SimplePlugin {
 
     fn _command(&self) -> PluginCommand {
         PluginCommand {
-            name: self._name(),
             about: "Just say something",
             args: vec![Arg {
                 name: "something".as_ptr() as *const c_char,
@@ -26,7 +25,7 @@ impl SimplePlugin {
         println!(
             "{}",
             matches
-                .get_one::<String>("SOMETHING")
+                .get_one::<String>("something")
                 .ok_or(anyhow::anyhow!("SOMETHING not found!"))?
         );
         Ok(())

@@ -20,7 +20,6 @@ pub struct PluginApi {
 
 #[repr(C)]
 pub struct PluginCommand {
-    pub name: &'static str,
     pub about: &'static str,
     pub args: Vec<Arg>,
     pub subcommands: Vec<PluginCommand>,
