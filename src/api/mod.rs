@@ -18,4 +18,7 @@ impl ApiError {
     pub fn new(msg: &str) -> Self {
         Self(msg.into())
     }
+    pub fn msg(&self) -> String {
+        self.0.clone()
+    }
 }
