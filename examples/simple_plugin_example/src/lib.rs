@@ -24,7 +24,6 @@ impl SimplePlugin {
                 .get_one::<String>("SOMETHING")
                 .ok_or(ApiError::new("SOMETHING not found!"))?
         );
-        return Err(ApiError::new("ERRRRROOOOOORRRR"));
         Ok(())
     }
 }
