@@ -5,18 +5,18 @@ use lake_house_cli_api::api::{Plugin, PluginApi};
 
 pub struct SimplePlugin;
 
-impl Plugin for SimplePlugin {
-    fn name(&self) -> &'static str {
+impl SimplePlugin {
+    fn _name(&self) -> &'static str {
         "say"
     }
 
-    fn command(&self) -> clap::Command {
-        Command::new(self.name())
+    fn _command(&self) -> clap::Command {
+        Command::new(self._name())
             .about("Just saying something")
             .arg(arg!(<SOMETHING>))
     }
 
-    fn run(&self, matches: clap::ArgMatches) -> anyhow::Result<()> {
+    fn _run(&self, matches: clap::ArgMatches) -> anyhow::Result<()> {
         println!(
             "{}",
             matches
@@ -34,17 +34,17 @@ impl SimplePlugin {
 
     extern "C" fn name(ptr: *mut c_void) -> *const c_char {
         let this = unsafe { &*(ptr as *mut SimplePlugin) };
-        std::ffi::CString::new(this.name()).unwrap().into_raw()
+        std::ffi::CString::new(this._name()).unwrap().into_raw()
     }
 
-    extern "C" fn command(ptr: *mut c_void) -> *mut Command {
+    extern "C" fn command(ptr: *mut c_void) -> *mut c_void {
         let this = unsafe { &*(ptr as *mut SimplePlugin) };
-        Box::into_raw(Box::new(this.command()))
+        Box::into_raw(Box::new(this._command())) as *mut c_void
     }
 
     extern "C" fn run(ptr: *mut c_void, matches: *const ArgMatches) -> i32 {
         let this = unsafe { &*(ptr as *mut SimplePlugin) };
-        if this.run(unsafe { (*matches).clone() }).is_ok() {
+        if this._run(unsafe { (*matches).clone() }).is_ok() {
             0
         } else {
             1
