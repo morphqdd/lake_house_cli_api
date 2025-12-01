@@ -13,7 +13,7 @@ pub trait Plugin {
 pub struct PluginApi {
     pub instantiate: extern "C" fn() -> *mut std::ffi::c_void,
     pub name: extern "C" fn(*mut std::ffi::c_void) -> *const c_char,
-    pub command: extern "C" fn(*mut std::ffi::c_void) -> *mut c_void,
+    pub command: extern "C" fn(*mut std::ffi::c_void) -> *mut PluginCommand,
     pub run: extern "C" fn(*mut std::ffi::c_void, *const ArgMatches) -> i32,
     pub drop: extern "C" fn(*mut std::ffi::c_void),
 }
