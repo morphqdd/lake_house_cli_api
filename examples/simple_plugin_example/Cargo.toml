@@ -1,0 +1,12 @@
+[package]
+name = "simple_plugin_example"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ['cdylib']
+
+[dependencies]
+lake-house-cli-api = {path = "../../"}
+clap = "4"
+anyhow = "1"

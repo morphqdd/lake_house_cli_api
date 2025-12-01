@@ -1,0 +1,11 @@
+[package]
+name = "lake-house-cli-api"
+version = "0.1.0"
+edition = "2024"
+
+[workspace]
+members = ['.', './examples/simple_plugin_example/']
+
+[dependencies]
+anyhow = "1.0.100"
+clap = "4.5.53"
