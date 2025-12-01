@@ -30,7 +30,7 @@ pub struct PluginCommand {
 #[derive(Default)]
 pub struct Arg {
     pub name: &'static str,
-    pub short: &'static str,
+    pub short: char,
     pub long: &'static str,
     pub about: &'static str,
     pub required: bool,
