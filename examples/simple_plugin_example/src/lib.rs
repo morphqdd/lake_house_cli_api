@@ -1,7 +1,8 @@
 use std::ffi::{c_char, c_void};
 
+use anyhow::bail;
 use clap::{ArgMatches, Command, arg};
-use lake_house_cli_api::api::{Arg, Plugin, PluginApi, PluginCommand};
+use lake_house_cli_api::api::PluginApi;
 
 pub struct SimplePlugin;
 
@@ -17,28 +18,6 @@ impl SimplePlugin {
     }
 
     fn _run(&self, matches: clap::ArgMatches) -> anyhow::Result<()> {
-        println!(
-            "{}",
-            matches
-                .get_one::<String>("something")
-                .ok_or(anyhow::anyhow!("SOMETHING not found!"))?
-        );
-        Ok(())
-    }
-}
-
-impl Plugin for SimplePlugin {
-    fn name(&self) -> &'static str {
-        "say"
-    }
-
-    fn command(&self) -> Command {
-        Command::new(self.name())
-            .about("Just say something")
-            .arg(arg!(<SOME>))
-    }
-
-    fn run(&self, matches: ArgMatches) -> anyhow::Result<()> {
         println!(
             "{}",
             matches
@@ -64,13 +43,12 @@ impl SimplePlugin {
         Box::into_raw(Box::new(this._command()))
     }
 
-    extern "C" fn run(ptr: *mut c_void, matches: *const ArgMatches) -> i32 {
+    extern "C" fn run(ptr: *mut c_void, matches: *const ArgMatches) -> anyhow::Result<()> {
         let this = unsafe { &*(ptr as *mut SimplePlugin) };
-        if this._run(unsafe { (*matches).clone() }).is_ok() {
-            0
-        } else {
-            1
+        if let Some(matches) = unsafe { matches.as_ref() } {
+            return this._run(matches.clone());
         }
+        bail!("Matches not found!")
     }
 
     extern "C" fn drop(ptr: *mut c_void) {
