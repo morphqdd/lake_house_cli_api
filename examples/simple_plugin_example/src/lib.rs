@@ -33,6 +33,28 @@ impl SimplePlugin {
     }
 }
 
+impl Plugin for SimplePlugin {
+    fn name(&self) -> &'static str {
+        "say"
+    }
+
+    fn command(&self) -> Command {
+        Command::new(self.name())
+            .about("Just say something")
+            .arg(arg!(<SOME>))
+    }
+
+    fn run(&self, matches: ArgMatches) -> anyhow::Result<()> {
+        println!(
+            "{}",
+            matches
+                .get_one::<String>("SOMETHING")
+                .ok_or(anyhow::anyhow!("SOMETHING not found!"))?
+        );
+        Ok(())
+    }
+}
+
 impl SimplePlugin {
     extern "C" fn instantiate() -> *mut c_void {
         Box::into_raw(Box::new(SimplePlugin)) as *mut c_void
@@ -71,4 +93,9 @@ pub extern "C" fn plugin() -> *const PluginApi {
         run: SimplePlugin::run,
         drop: SimplePlugin::drop,
     }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn dyn_plugin() -> *const SimplePlugin {
+    &SimplePlugin
 }
