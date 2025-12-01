@@ -10,15 +10,10 @@ impl SimplePlugin {
         "say"
     }
 
-    fn _command(&self) -> PluginCommand {
-        PluginCommand {
-            about: "Just say something",
-            args: vec![Arg {
-                name: "something".as_ptr() as *const c_char,
-                ..Default::default()
-            }],
-            subcommands: vec![],
-        }
+    fn _command(&self) -> Command {
+        Command::new(self._name())
+            .about("Just say something")
+            .arg(arg!(<SOMETHING>))
     }
 
     fn _run(&self, matches: clap::ArgMatches) -> anyhow::Result<()> {
@@ -64,7 +59,7 @@ impl SimplePlugin {
         std::ffi::CString::new(this._name()).unwrap().into_raw()
     }
 
-    extern "C" fn command(ptr: *mut c_void) -> *mut PluginCommand {
+    extern "C" fn command(ptr: *mut c_void) -> *mut Command {
         let this = unsafe { &*(ptr as *mut SimplePlugin) };
         Box::into_raw(Box::new(this._command()))
     }
