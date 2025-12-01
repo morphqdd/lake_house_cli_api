@@ -29,7 +29,7 @@ pub struct PluginCommand {
 #[repr(C)]
 #[derive(Default)]
 pub struct Arg {
-    pub name: &'static str,
+    pub name: *const c_char,
     pub short: char,
     pub long: &'static str,
     pub about: &'static str,

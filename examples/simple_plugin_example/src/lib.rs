@@ -15,7 +15,7 @@ impl SimplePlugin {
             name: self._name(),
             about: "Just say something",
             args: vec![Arg {
-                name: "something",
+                name: "something".as_ptr() as *const c_char,
                 ..Default::default()
             }],
             subcommands: vec![],
@@ -93,9 +93,4 @@ pub extern "C" fn plugin() -> *const PluginApi {
         run: SimplePlugin::run,
         drop: SimplePlugin::drop,
     }
-}
-
-#[unsafe(no_mangle)]
-pub extern "C" fn dyn_plugin() -> *const SimplePlugin {
-    &SimplePlugin
 }
